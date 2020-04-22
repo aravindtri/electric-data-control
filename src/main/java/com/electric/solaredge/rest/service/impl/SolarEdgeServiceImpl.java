@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import com.electric.solaredge.dto.CurrentStateDTO;
+import com.electric.solaredge.dto.CurrentSolarStateDTO;
 import com.electric.solaredge.rest.data.response.currentstate.CurrentState;
 import com.electric.solaredge.rest.data.response.currentstate.Overview;
 import com.electric.solaredge.rest.service.SolarEdgeService;
@@ -40,15 +40,15 @@ public class SolarEdgeServiceImpl implements SolarEdgeService {
 	private int timeOffset;
 	
 	@Override
-	public CurrentStateDTO getCurrentState() {
+	public CurrentSolarStateDTO getCurrentState() {
 		RestTemplate template = new RestTemplate();
 		CurrentState currentState = template.getForObject(String.format(solarOverviewEndpoint, siteId,apiKey), CurrentState.class);
-		CurrentStateDTO currentStateDTO = createAndPopulate(currentState);
+		CurrentSolarStateDTO currentStateDTO = createAndPopulate(currentState);
 		return currentStateDTO;
 	}
 
-	private CurrentStateDTO createAndPopulate(CurrentState currentState) {
-		CurrentStateDTO currentStateDTO = new CurrentStateDTO();
+	private CurrentSolarStateDTO createAndPopulate(CurrentState currentState) {
+		CurrentSolarStateDTO currentStateDTO = new CurrentSolarStateDTO();
 		Overview overview=currentState.getOverview();
 		currentStateDTO.setCurrentPower(overview.getCurrentPower().getPower());
 		currentStateDTO.setDate(converToDate(overview.getLastUpdateTime()));

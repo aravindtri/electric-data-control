@@ -1,8 +1,8 @@
 package com.electric.solaredge.rest.service;
 
-import com.electric.solaredge.dto.CurrentStateDTO;
+import com.electric.solaredge.dto.CurrentSolarStateDTO;
 
 public interface SolarEdgeService {
 	
-	CurrentStateDTO getCurrentState();
+	CurrentSolarStateDTO getCurrentState();
 }

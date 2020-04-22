@@ -1,4 +1,4 @@
-package com.electric.tesla.schedule.config;
+package com.electric.schedule.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.SchedulingConfigurer;

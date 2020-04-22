@@ -1,8 +1,8 @@
 package com.electric.tesla.rest.service;
 
-import com.electric.tesla.dto.VehicleDataDTO;
+import com.electric.tesla.dto.CurrentVehicleStateDTO;
 
 public interface VehicleStateService {
-	VehicleDataDTO getVehicleState();
+	CurrentVehicleStateDTO getVehicleState();
 	boolean wakeUpVehicle();
 }

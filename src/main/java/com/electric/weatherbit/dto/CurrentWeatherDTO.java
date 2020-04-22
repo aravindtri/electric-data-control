@@ -2,23 +2,32 @@ package com.electric.weatherbit.dto;
 
 import java.util.Date;
 
-import org.apache.commons.lang3.builder.ToStringBuilder;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+@Entity
+@Table(name="current_weather")
 public class CurrentWeatherDTO {
-	int clouds;
-	double temperature;
-	double solarrad;
-	double elevangle;
-	double uv;
-	int visibilityKm;
-	double hAngle;
-	double directNSIrdnc;
-	double diffuseHSIrdnc;
-	int precipitation;
-	double rhumidity;
-	double pressure;
-	Date lastUpdatedTime;
-	Date entryTime;
+	@Id
+	@GeneratedValue
+	private Integer pk;
+	private int clouds;
+	private double temperature;
+	private double solarrad;
+	private double elevangle;
+	private double uv;
+	private int visibilityKm;
+	private double hAngle;
+	private double directNSIrdnc;
+	private double diffuseHSIrdnc;
+	private int precipitation;
+	private double rhumidity;
+	private double pressure;
+	private Date lastUpdatedTime;
+	private Date entryTime;
 	public int getClouds() {
 		return clouds;
 	}

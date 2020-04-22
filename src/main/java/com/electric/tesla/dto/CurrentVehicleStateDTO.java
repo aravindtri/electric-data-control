@@ -2,10 +2,19 @@ package com.electric.tesla.dto;
 
 import java.util.Date;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
-public class VehicleDataDTO {
-
+@Entity
+@Table(name="vehicle_data")
+public class CurrentVehicleStateDTO {
+	@Id
+	@GeneratedValue
+	private Integer pk;
 	private Date date;
 	private int vehicleId;
 	private String vin;
@@ -82,6 +91,13 @@ public class VehicleDataDTO {
 	}
 	public void setHeading(double heading) {
 		this.heading = heading;
+	}
+	
+	public Integer getPk() {
+		return pk;
+	}
+	public void setPk(Integer pk) {
+		this.pk = pk;
 	}
 	
 	@Override

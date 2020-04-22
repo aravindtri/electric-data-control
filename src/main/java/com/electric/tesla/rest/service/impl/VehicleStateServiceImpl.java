@@ -13,7 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import com.electric.tesla.dto.VehicleDataDTO;
+import com.electric.tesla.dto.CurrentVehicleStateDTO;
 import com.electric.tesla.rest.data.response.vehiclestate.ChargeState;
 import com.electric.tesla.rest.data.response.vehiclestate.DriveState;
 import com.electric.tesla.rest.data.response.vehiclestate.Response;
@@ -34,7 +34,7 @@ public class VehicleStateServiceImpl implements VehicleStateService {
 	private String vehicleWakeEndpoint;
 	
 	@Override
-	public VehicleDataDTO getVehicleState() {
+	public CurrentVehicleStateDTO getVehicleState() {
 		try {
 			if(wakeUpVehicle())
 			{
@@ -43,7 +43,7 @@ public class VehicleStateServiceImpl implements VehicleStateService {
 			RestTemplate template = new RestTemplate();
 			ResponseEntity<VehicleData> response=template.exchange(vehicleDataEndpoint, HttpMethod.GET, createEntityWithHeaders(),VehicleData.class);
 			System.out.println(response.getBody());
-			VehicleDataDTO vehicleDataDTO = createAndPopulate(response.getBody());
+			CurrentVehicleStateDTO vehicleDataDTO = createAndPopulate(response.getBody());
 			revokeToken();
 			return vehicleDataDTO;
 		} catch (Throwable e) {
@@ -54,9 +54,9 @@ public class VehicleStateServiceImpl implements VehicleStateService {
 		}
 	}
 	
-	private VehicleDataDTO createAndPopulate(VehicleData vehicleData)
+	private CurrentVehicleStateDTO createAndPopulate(VehicleData vehicleData)
 	{
-		VehicleDataDTO vehicleDataDTO = new VehicleDataDTO();
+		CurrentVehicleStateDTO vehicleDataDTO = new CurrentVehicleStateDTO();
 		Response response=vehicleData.getResponse();
 		ChargeState chargeState=response.getChargeState();
 		vehicleDataDTO.setBatteryLevel(chargeState.getBatteryLevel());

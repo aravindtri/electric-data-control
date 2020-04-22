@@ -2,10 +2,20 @@ package com.electric.solaredge.dto;
 
 import java.util.Date;
 
-import org.apache.commons.lang3.builder.ToStringBuilder;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
-public class CurrentStateDTO {
-	private double currentPower, totalPower;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+@Entity
+@Table(name="current_solar_state")
+public class CurrentSolarStateDTO {
+	@Id
+	@GeneratedValue
+	private Integer pk;
+	private double currentPower;
+	private double totalPower;
 	private Date date;
 	private String unit, measuredBy, siteId;
 	
@@ -45,7 +55,12 @@ public class CurrentStateDTO {
 	public void setTotalPower(double totalPower) {
 		this.totalPower = totalPower;
 	}
-	
+	public Integer getPk() {
+		return pk;
+	}
+	public void setPk(Integer pk) {
+		this.pk = pk;
+	}
 	@Override
 	public String toString() {
 		return ToStringBuilder.reflectionToString(this);
