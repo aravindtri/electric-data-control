@@ -55,11 +55,11 @@ public class WeatherServiceImpl implements WeatherService {
 		currentWeatherDTO.setEntryTime(new Date());
 		currentWeatherDTO.sethAngle(data.getHAngle());
 		currentWeatherDTO.setLastUpdatedTime(convertDate(data.getLastObTime()));
-		currentWeatherDTO.setPrecipitation(data.getPres());
+		currentWeatherDTO.setPrecipitationmmPerHr(data.getPres());
 		currentWeatherDTO.setPressure(data.getPres());
 		currentWeatherDTO.setRhumidity(data.getRh());
 		currentWeatherDTO.setSolarrad(data.getSolarRad());
-		currentWeatherDTO.setTemperature(data.getTemp());
+		currentWeatherDTO.setTemperatureInC(data.getTemp());
 		currentWeatherDTO.setUv(data.getUv());
 		currentWeatherDTO.setVisibilityKm(data.getVis());
 		return currentWeatherDTO;

@@ -20,6 +20,8 @@ import org.springframework.stereotype.Component;
 import com.electric.solaredge.dao.repo.CurrentSolarStateRepository;
 import com.electric.solaredge.dto.CurrentSolarStateDTO;
 import com.electric.solaredge.rest.service.SolarEdgeService;
+import com.electric.solaredge.weather.dao.repo.SolarWeatherRepository;
+import com.electric.solaredge.weather.dto.SolarWeatherDTO;
 import com.electric.tesla.dto.CurrentVehicleStateDTO;
 import com.electric.tesla.rest.dao.repo.VehicleDataRepository;
 import com.electric.tesla.rest.service.VehicleStateService;
@@ -66,7 +68,10 @@ public class TaskSchedulerComponent {
 	@Resource
 	private CurrentWeatherRepository currentWeatherRepository;
 
-	// @Scheduled(cron = "0 0 3 * * *")
+	@Resource
+	private SolarWeatherRepository solarWeatherRepository;
+
+	@Scheduled(cron = "0 0 3 * * *")
 	// @Scheduled(fixedRate = 43200000)
 	public void scheduleTaskTeslaMiles() {
 		LOG.info("Tesla Cron Task :: Execution Time - {}", dateTimeFormatter.format(LocalDateTime.now()));
@@ -85,9 +90,31 @@ public class TaskSchedulerComponent {
 		LOG.info("Tesla Rows added - " + vehicleDataDto);
 	}
 
-	// @Scheduled(cron = "0 1,16,31,46 6-21 * * *")
-	@Scheduled(fixedRate = 600000)
-	public void scheduleTaskSolarOverview() {
+	@Scheduled(cron = "0 1,16,31,46 6-21 * * *")
+	// @Scheduled(fixedRate = 600000)
+	public void scheduleSolarAndWeather() {
+		CurrentSolarStateDTO solarState = getSolarState();
+		CurrentWeatherDTO currentWeather = getCurrentWeather();
+		if (solarState != null && currentWeather != null) {
+			SolarWeatherDTO solarWeather = new SolarWeatherDTO();
+			solarWeather.setClouds(currentWeather.getClouds());
+			solarWeather.setElevangle(currentWeather.getElevangle());
+			solarWeather.setSolarrad(currentWeather.getSolarrad());
+			solarWeather.setTemperatureInC(currentWeather.getTemperatureInC());
+			solarWeather.setUv(currentWeather.getUv());
+			solarWeather.setVisibilityKm(currentWeather.getVisibilityKm());
+			solarWeather.setWeatherUpdatedTime(currentWeather.getLastUpdatedTime());
+			solarWeather.setCurrentWeather(currentWeather);
+
+			solarWeather.setCurrentPower(solarState.getCurrentPower());
+			solarWeather.setCurrentSolarState(solarState);
+			solarWeather.setSolarUpdatedTime(solarState.getDate());
+
+			solarWeatherRepository.save(solarWeather);
+		}
+	}
+
+	public CurrentSolarStateDTO getSolarState() {
 		LOG.info("Solar Cron Task :: Execution Time - {}", dateTimeFormatter.format(LocalDateTime.now()));
 		CurrentSolarStateDTO currentStateDTO = null;
 		int i = 1;
@@ -101,10 +128,18 @@ public class TaskSchedulerComponent {
 			i++;
 		} while (currentStateDTO == null && i < 10);
 
-		LOG.info("Solar bRows added - " + currentSolarStateRepository.save(currentStateDTO));
+		CurrentSolarStateDTO solarState = currentSolarStateRepository.save(currentStateDTO);
+		LOG.info("Solar bRows added - " + solarState);
 		if (charging) {
 			updateChargeCurrent(currentStateDTO);
 		}
+		return solarState;
+	}
+
+	@Scheduled(fixedRate = 900000)
+	public CurrentWeatherDTO getCurrentWeather() {
+		CurrentWeatherDTO currentWeather = weatherService.getCurrentWeather();
+		return currentWeatherRepository.save(currentWeather);
 	}
 
 	private void updateChargeCurrent(CurrentSolarStateDTO currentStateDTO) {
@@ -122,13 +157,6 @@ public class TaskSchedulerComponent {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	}
-
-	// @Scheduled(cron = "0 1,16,31,46 6-21 * * *")
-	@Scheduled(fixedRate = 900000)
-	public void scheduleTaskWeatherOverview() {
-		CurrentWeatherDTO currentWeather = weatherService.getCurrentWeather();
-		currentWeatherRepository.save(currentWeather);
 	}
 
 	private void executeBashToSetCurrent(int calCurrentValue) throws InterruptedException, IOException {
